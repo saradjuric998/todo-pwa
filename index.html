@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Todo App</title>
+</head>
+<body ng-app="ToDo">
+    <div ng-controller="todo_Controller" class="container">
+    <div class="tasks">
+        <div style="padding: 32px;">
+            <span>TODOs</span>
+            <a href="/todo-pwa/completed">Completed</a>
+        </div>
+
+        <input type="text" ng-model="search" placeholder="Search task..." class="search">
+        <ul>
+            <li ng-click="clearTodo(todo)" ng-repeat="todo in todos | orderBy:'date'" ng-if="todo.done == false" class="tasks_text row">
+                <div class="col-md-10" >
+                   <input type="checkbox" >
+                    <span ng-class="{'done':todo.done}">{{todo.title}}</span>
+                </div>
+                <div class="col-md-2">{{todo.date | date: short}}</div>
+            </li>
+        </ul>
+    </div>
+        <form class="add" name="frm" ng-submit="addTodo()">
+            <div class="form-row" >
+                <div class="col-md-7 add_div">
+                    <input type="text" name="newtodo" ng-model="newTodo" placeholder="Write task" maxlength="80" required>
+                </div>
+                <div class="col-md-3 add_div">
+                        <input type="date" ng-model="todo_date" required>
+                    </div>
+                <div class="col-md-2 add_div" >
+                        <button ng-disabled="frm.$invalid" class="task_add">Add Task</button>
+                    </div>          
+            </div>
+        </form>
+        <button ng-click="clearCompleted()" class="clear">Clear Completed</button>
+    </div>
+        
+    </div>
+   <script src="./angular/angular.min.js"></script> 
+   <script src="./angular/app.js"></script>
+   <script>
+        if('serviceWorker' in navigator){
+            window.addEventListener('load',()=>{
+                navigator.serviceWorker.register('./sw.js');
+            });  
+        }
+
+        window.addEventListener('offline', handleConnection);
+
+        function handleConnection() {
+            if (!navigator.onLine) {
+                // handle offline status
+                alert("You've gone offline!");
+            }
+        }
+   </script>
+</body>
+</html>
